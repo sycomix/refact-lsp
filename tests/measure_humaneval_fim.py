@@ -16,19 +16,26 @@ MAX_TOKENS = 256
 
 
 def make_call(src_py, src_txt, cursor_line, cursor_pos):
-    res = requests.post(f"http://127.0.0.1:8001/v1/code-completion", json={
-        "inputs": {
-            "sources": {src_py: src_txt},
-            "cursor": {"file": src_py, "line": cursor_line, "character": cursor_pos},
-            "multiline": True
+    res = requests.post(
+        "http://127.0.0.1:8001/v1/code-completion",
+        json={
+            "inputs": {
+                "sources": {src_py: src_txt},
+                "cursor": {
+                    "file": src_py,
+                    "line": cursor_line,
+                    "character": cursor_pos,
+                },
+                "multiline": True,
+            },
+            "stream": False,
+            "model": MODEL,
+            "parameters": {
+                "temperature": TEMPERATURE,
+                "max_new_tokens": MAX_TOKENS,
+            },
         },
-        "stream": False,
-        "model": MODEL,
-        "parameters": {
-            "temperature": TEMPERATURE,
-            "max_new_tokens": MAX_TOKENS
-        }
-    })
+    )
     res.raise_for_status()
     j = res.json()
     print(j)
@@ -51,9 +58,7 @@ def test_by_infill(case):
 
 
 if __name__ == "__main__":
-    postfix = ""
-    if len(sys.argv) > 1:
-        postfix = sys.argv[1]
+    postfix = sys.argv[1] if len(sys.argv) > 1 else ""
     t0 = time.time()
     problems = list(read_problems().values()) * TIMES
     comm = MPI.COMM_WORLD
@@ -71,7 +76,7 @@ if __name__ == "__main__":
     if comm.rank == 0:
         all_output = [x for y in tmp for x in y]
         print("len(all_output)==%i" % (len(all_output),))
-        output_name = "human-%s%s.jsonl" % ("fim", postfix)
+        output_name = f"human-fim{postfix}.jsonl"
         write_jsonl(output_name, all_output)
         res = subprocess.check_output(f"evaluate_functional_correctness {output_name}", shell=True)
         metrics = json.loads(res.decode('utf-8').strip().split('\n')[-1].replace("'", '"'))

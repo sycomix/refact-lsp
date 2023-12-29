@@ -49,7 +49,7 @@ def _check(grey_corrected, grey_corrected_expected, is_valid, is_valid_expected,
         diff = list(d.compare(grey_corrected.splitlines(), grey_corrected_expected.splitlines()))
         for l in diff:
             if not l.startswith("+") and not l.startswith("-"):
-                l = "= " + l
+                l = f"= {l}"
             detailed += l + "\n"
         return detailed
 

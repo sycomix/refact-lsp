@@ -46,10 +46,9 @@ def main():
         pass
     lsp_endpoint.join()
 
-    print("%s%s" % (
-        termcolor.colored(hello_py, "green"),
-        termcolor.colored(cc["choices"][0]["code_completion"], "magenta")
-    ))
+    print(
+        f'{termcolor.colored(hello_py, "green")}{termcolor.colored(cc["choices"][0]["code_completion"], "magenta")}'
+    )
 
 
 if __name__ == "__main__":
