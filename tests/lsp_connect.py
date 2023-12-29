@@ -58,14 +58,13 @@ class LSPCall:
             }
 
         uri = os.path.join(self._connect_options.root_uri, file_name)
-        cc = self._lsp_client.lsp_endpoint.call_method(
+        return self._lsp_client.lsp_endpoint.call_method(
             "refact/getCompletions",
             textDocument=pylspclient.lsp_structs.TextDocumentIdentifier(uri),
             position=pylspclient.lsp_structs.Position(pos[0], pos[1]),
             parameters=params,
             multiline=multiline,
         )
-        return cc
 
     def connect(self):
         self._connect2lsp(self._connect_options)

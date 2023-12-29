@@ -18,8 +18,8 @@ def call_completion(
 ):
     headers = {
         "Content-Type": "application/json",
-        "Authorization": "Bearer %s" % (os.environ.get("HF_TOKEN") or os.environ.get("REFACT_TOKEN")),
-        }
+        "Authorization": f'Bearer {os.environ.get("HF_TOKEN") or os.environ.get("REFACT_TOKEN")}',
+    }
     r = requests.post(
         "http://127.0.0.1:8001/v1/code-completion",
         json={
@@ -74,9 +74,12 @@ def pretty_print_wrapper(
     print("-"*100)
     for line_n, line in enumerate(code.splitlines()):
         if line_n == cursor_line:
-            print("%s" % termcolor.colored(line[:cursor_character], "green") + "|" + termcolor.colored(line[cursor_character:], "green"))
+            print(
+                f'{termcolor.colored(line[:cursor_character], "green")}|'
+                + termcolor.colored(line[cursor_character:], "green")
+            )
         else:
-            print("%s" % termcolor.colored(line, "green"))
+            print(f'{termcolor.colored(line, "green")}')
     ans, fr = call_completion(code, multiline=multiline, cursor_line=cursor_line, cursor_character=cursor_character, **kwargs)
     print("multiline=%s, completion \"%s\", finish_reason=%s" % (multiline, termcolor.colored(ans.replace("\n", "\\n"), "cyan"), fr))
     return ans

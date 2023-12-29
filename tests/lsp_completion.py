@@ -20,10 +20,9 @@ def lsp_completion():
                 "temperature": 0.1
             },
         )
-    print("%s%s" % (
-        colored(hello_py, "green"),
-        colored(cc["choices"][0]["code_completion"], "magenta")
-    ))
+    print(
+        f'{colored(hello_py, "green")}{colored(cc["choices"][0]["code_completion"], "magenta")}'
+    )
 
 
 if __name__ == '__main__':
